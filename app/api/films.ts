@@ -1,3 +1,12 @@
+export type FilmCharacter = {
+  id: string;
+  name: string;
+  gender?: string;
+  age?: string;
+  eye_color?: string;
+  hair_color?: string;
+};
+
 export type Film = {
   id: string;
   title: string;
@@ -6,6 +15,7 @@ export type Film = {
   image: string;
   movie_banner: string;
   people: string[];
+  characters?: FilmCharacter[];
 };
 
 export type Films = Film[];
@@ -13,7 +23,7 @@ export type Films = Film[];
 const BASE_URL = "https://ghibli.deno.dev/api";
 const FILMS_URL = `${BASE_URL}/films`;
 
-export async function getFilms(title?: string | null): Promise<Films> {
+export async function getFilms(title?: string | null) {
   const response = await fetch(FILMS_URL);
   const films: Films = await response.json();
   return films.filter((film) =>
@@ -23,6 +33,12 @@ export async function getFilms(title?: string | null): Promise<Films> {
 
 export async function getFilmById(filmId: string) {
   const response = await fetch(`${FILMS_URL}/${filmId}`);
-  const film = await response.json();
-  return film;
+  const film: Film = await response.json();
+
+  const characters = await Promise.all(
+    film.people
+      .filter((url) => url !== "")
+      .map((url) => fetch(url).then((res) => res.json()))
+  );
+  return { ...film, characters };
 }
