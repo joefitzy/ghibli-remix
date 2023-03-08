@@ -1,11 +1,7 @@
 import { LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
+import { Link } from "@remix-run/react";
 import { useLoaderData } from "react-router";
-import { getFilms } from "~/api/films";
-
-// SERVER SIDE CODE
-export const loader: LoaderFunction = async () => {
-  return getFilms();
-};
+import { Films, getFilms } from "~/api/films";
 
 export const meta: MetaFunction = () => {
   return { title: "Studio Ghibli | Films" };
@@ -15,9 +11,16 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: "styles" }];
 };
 
+// SERVER SIDE CODE
+export const loader: LoaderFunction = async ({ request }) => {
+  const url = new URL(request.url);
+  const title = url.searchParams.get("title");
+  return getFilms(title);
+};
+
 // CLIENT SIDE
 export default function FilmsIndex() {
-  const films = useLoaderData();
+  const films = useLoaderData() as Films;
   return (
     <div className="p-16 font-sans">
       <h1 className="text-5xl font-bold text-center">Studio Ghibli Films</h1>
@@ -42,10 +45,16 @@ export default function FilmsIndex() {
       <div className="grid grid-cols-4 gap-4">
         {films.map((f) => {
           return (
-            <div className="hover:shadow-2xl hover:scale-105 hover:font-bold cursor-pointer">
+            <Link
+              to={f.id}
+              key={f.id}
+              title={f.title}
+              className="hover:shadow-2xl hover:scale-105 hover:font-bold cursor-pointer"
+              prefetch="none"
+            >
               <div>{f.title}</div>
               <img src={f.image} alt={f.title} />
-            </div>
+            </Link>
           );
         })}
       </div>
