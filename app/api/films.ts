@@ -22,6 +22,7 @@ export type Films = Film[];
 
 const BASE_URL = "https://ghibli.deno.dev/api";
 const FILMS_URL = `${BASE_URL}/films`;
+const PEOPLE_URL = `${BASE_URL}/people`;
 
 export async function getFilms(title?: string | null) {
   const response = await fetch(FILMS_URL);
@@ -34,10 +35,9 @@ export async function getFilms(title?: string | null) {
 export async function getFilmById(filmId: string) {
   const response = await fetch(`${FILMS_URL}/${filmId}`);
   const film: Film = await response.json();
-
   const characters = await Promise.all(
     film.people
-      .filter((url) => url !== "")
+      .filter((url) => url !== PEOPLE_URL)
       .map((url) => fetch(url).then((res) => res.json()))
   );
   return { ...film, characters };
