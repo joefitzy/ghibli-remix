@@ -2,8 +2,6 @@
 
 Following this tutorial: https://www.youtube.com/watch?v=HOlYQu_r4Io&t=2589s
 
-current timestamp: https://youtu.be/HOlYQu_r4Io?t=3890
-
 - [Remix Docs](https://remix.run/docs)
 
 ## Development

@@ -1,3 +1,5 @@
+import { type CommentEntry, getComments } from "./comments";
+
 export type FilmCharacter = {
   id: string;
   name: string;
@@ -16,6 +18,7 @@ export type Film = {
   movie_banner: string;
   people: string[];
   characters?: FilmCharacter[];
+  comments?: CommentEntry[];
 };
 
 export type Films = Film[];
@@ -35,10 +38,21 @@ export async function getFilms(title?: string | null) {
 export async function getFilmById(filmId: string) {
   const response = await fetch(`${FILMS_URL}/${filmId}`);
   const film: Film = await response.json();
+  const comments = await getComments(filmId);
   const characters = await Promise.all(
     film.people
       .filter((url) => url !== PEOPLE_URL)
       .map((url) => fetch(url).then((res) => res.json()))
   );
-  return { ...film, characters };
+  return { ...film, characters, comments };
+}
+
+export async function getFilmCharacter(id: string): Promise<FilmCharacter> {
+  const response = await fetch(`${PEOPLE_URL}/${id}`);
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  return response.json();
 }

@@ -21,7 +21,7 @@ export default function FilmBanner({ film }: FilmBannerProps) {
         <img
           src={film.movie_banner}
           className="w-full h-auto"
-          style={{ marignTop: -100 }}
+          style={{ marginTop: -100 }}
           alt={film.title}
         />
       </div>

@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { NavLink } from "@remix-run/react";
 import { FilmCharacter } from "~/api/films";
 
 type CharacterListProps = {
@@ -12,14 +12,20 @@ export default function CharacterList({ characters }: CharacterListProps) {
 
       <ul className="flex flex-col space-y-3 my-3">
         {characters?.map((char) => (
-          <li>
-            <Link
-              to={`characters/${char.id}`}
-              className="w-full hover:underline p-3 rounded border border-slate-400 inline-block"
-            >
-              {char.name}
-            </Link>
-          </li>
+          <NavLink
+            key={char.id}
+            to={`characters/${char.id}`}
+            prefetch="intent"
+            className={({ isActive }) =>
+              `w-full hover:underline p-3 rounded border border-slate-400 inline-block ${
+                isActive
+                  ? "bg-slate-300 text-black font-bold border-2"
+                  : "text-blue-500"
+              }`
+            }
+          >
+            {char.name}
+          </NavLink>
         ))}
       </ul>
     </div>
