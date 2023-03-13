@@ -1,13 +1,13 @@
-import { LoaderFunction } from "@remix-run/node";
+import { LoaderArgs } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { FilmCharacter, getFilmCharacter } from "~/api/films";
 
-export const loader: LoaderFunction = async ({ params }) => {
+export async function loader({ params }: LoaderArgs) {
   invariant(params.characterId, "expected params.charactersId");
 
   return getFilmCharacter(params.characterId);
-};
+}
 
 function CharacterWrapper({ title, colors, children }: any) {
   return (
@@ -20,7 +20,7 @@ function CharacterWrapper({ title, colors, children }: any) {
 
 export default function CharacterDetails() {
   const { name, gender, age, eye_color, hair_color } =
-    useLoaderData<FilmCharacter>();
+    useLoaderData<typeof loader>();
   return (
     <CharacterWrapper title="Character Details">
       <div className="text-gray-700 font-bold text-xl mb-2">{name}</div>

@@ -1,6 +1,6 @@
 import {
-  ActionFunction,
-  LoaderFunction,
+  ActionArgs,
+  LoaderArgs,
   MetaFunction,
   redirect,
 } from "@remix-run/node";
@@ -16,7 +16,7 @@ export const meta: MetaFunction = ({ data }) => {
   return { title: data.title, description: data.description };
 };
 
-export const loader: LoaderFunction = async ({ params }) => {
+export async function loader({ params }: LoaderArgs) {
   invariant(params.filmId, "expected params.filmId");
 
   const film = await getFilmById(params.filmId);
@@ -24,9 +24,9 @@ export const loader: LoaderFunction = async ({ params }) => {
   console.log("filmId fetch results --> ", film.title);
 
   return film;
-};
+}
 
-export const action: ActionFunction = async ({ request, params }) => {
+export async function action({ request, params }: ActionArgs) {
   invariant(params.filmId, "expected params.filmId");
 
   const body = await request.formData();
@@ -54,10 +54,10 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   await addComment(comment);
   return redirect(`/films/${params.filmId}`);
-};
+}
 
 export default function FilmDetails() {
-  const film = useLoaderData() as Film;
+  const film = useLoaderData<typeof loader>();
   return (
     <div>
       <FilmBanner film={film} />
